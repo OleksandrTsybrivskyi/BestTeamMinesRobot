@@ -51,6 +51,8 @@ void setup() {
   Serial.println(-2);
   // mpu.initialize();
   Serial.println(-1);
+
+  pinMode(A0, INPUT);
 }
 
 void loop() {
@@ -84,6 +86,17 @@ void loop() {
   //   delay(500);
   //   forwardMove();
   // }
+  int analogValue = analogRead(A0); // Зчитуємо сигнал з аналогового піну
+  Serial.println(analogValue);
+  // float voltage = analogValue * (1.0 / 1023.0); // Напруга в вольтах
+
+  if (analogValue >= 12) { // 20 мВ
+    Serial.println("Метал детектовано!");
+    // Можна активувати якісь дії, наприклад:
+    // stopMotors(); // Зупинка моторів
+    // delay(1000);
+  }
+
 
   delay(10); // щоб не спамити сервер
 }
@@ -99,14 +112,14 @@ void sendTelemetry(String jsonPayload) {
   http.end();
 }
 String getCommand() {
-  Serial.println(0);
+  // Serial.println(0);
   if (WiFi.status() != WL_CONNECTED) return "wifi_error";
-  Serial.println(1);
+  // Serial.println(1);
   HTTPClient http;
   http.begin(client, "http://193.169.189.125:8000/update/get");  // адреса може бути та сама або інша, якщо треба
-  Serial.println(2);
+  // Serial.println(2);
   int httpResponseCode = http.GET();
-  Serial.println(3);
+  // Serial.println(3);
 
   if (httpResponseCode > 0) {
     String response = http.getString();
